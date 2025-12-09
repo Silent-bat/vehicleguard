@@ -39,7 +39,7 @@ export const auth = betterAuth({
     generateId: false,
   },
   secret: process.env.BETTER_AUTH_SECRET || "secret-key-change-this",
-  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3001",
+  baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
 })
 
 export type Session = typeof auth.$Infer.Session
