@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Cameroon flag colors background -->
+  <rect width="66.67" height="200" fill="#007A3D"/>
+  <rect x="66.67" width="66.67" height="200" fill="#CE1126"/>
+  <rect x="133.34" width="66.67" height="200" fill="#FCD116"/>
+  
+  <!-- Star -->
+  <path d="M100 60 L107 85 L133 85 L112 100 L120 125 L100 110 L80 125 L88 100 L67 85 L93 85 Z" fill="#FCD116"/>
+  
+  <!-- Shield -->
+  <path d="M100 130 L70 145 L70 170 C70 180 85 190 100 195 C115 190 130 180 130 170 L130 145 Z" fill="#ffffff" stroke="#007A3D" stroke-width="2"/>
+  
+  <!-- Vehicle icon -->
+  <path d="M85 155 L90 150 L110 150 L115 155 L115 170 L85 170 Z" fill="#007A3D"/>
+  <circle cx="90" cy="170" r="3" fill="#CE1126"/>
+  <circle cx="110" cy="170" r="3" fill="#CE1126"/>
+  
+  <text x="100" y="30" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#ffffff">VehicleGuard</text>
+  <text x="100" y="48" font-family="Arial, sans-serif" font-size="10" text-anchor="middle" fill="#ffffff">Cameroun</text>
+</svg>

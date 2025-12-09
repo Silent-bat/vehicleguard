@@ -1,0 +1,208 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User and Authentication Models
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  name          String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Account approval system
+  isApproved    Boolean   @default(false)
+  approvedAt    DateTime?
+  approvedById  String?
+  
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  role          UserRole  @default(USER)
+  
+  // User can register vehicles and report thefts
+  vehicles      Vehicle[]
+  theftCases    TheftCase[]
+  activities    Activity[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  accountId         String
+  providerId        String
+  accessToken       String?  @db.Text
+  refreshToken      String?  @db.Text
+  idToken           String?  @db.Text
+  expiresAt         DateTime?
+  password          String?  @db.Text
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id
+  userId       String
+  token        String   @unique
+  expiresAt    DateTime
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+// Vehicle Management
+model Vehicle {
+  id               String      @id @default(cuid())
+  brand            String
+  model            String
+  licensePlate     String      @unique
+  year             Int
+  color            String
+  vin              String?     @unique
+  registeredById   String
+  registeredBy     User        @relation(fields: [registeredById], references: [id])
+  status           VehicleStatus @default(ACTIVE)
+  
+  department       String?
+  assignedDriver   String?
+  insuranceNumber  String?
+  insuranceExpiry  DateTime?
+  
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  theftCases       TheftCase[]
+
+  @@map("vehicles")
+}
+
+enum VehicleStatus {
+  ACTIVE
+  STOLEN
+  RECOVERED
+  INACTIVE
+}
+
+// Theft Case Management
+model TheftCase {
+  id               String      @id @default(cuid())
+  caseNumber       String      @unique @default(cuid())
+  vehicleId        String
+  vehicle          Vehicle     @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  reportedById     String
+  reportedBy       User        @relation(fields: [reportedById], references: [id])
+  
+  theftDate        DateTime
+  theftTime        String
+  location         String
+  locationDetails  String?     @db.Text
+  description      String      @db.Text
+  
+  driverName       String?
+  driverContact    String?
+  driverLicense    String?
+  
+  status           CaseStatus  @default(IN_PROGRESS)
+  priority         Priority    @default(MEDIUM)
+  assignedTo       String?
+  
+  recoveredDate    DateTime?
+  recoveryLocation String?
+  vehicleCondition String?     @db.Text
+  
+  policeReportNumber String?
+  policeDepartment   String?
+  investigatingOfficer String?
+  
+  actionsTaken     String?     @db.Text
+  evidence         Evidence[]
+  
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  @@map("theft_cases")
+}
+
+enum CaseStatus {
+  IN_PROGRESS
+  UNDER_INVESTIGATION
+  RESOLVED
+  CLOSED
+  RECOVERED
+  ABANDONED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Evidence {
+  id            String    @id @default(cuid())
+  theftCaseId   String
+  theftCase     TheftCase @relation(fields: [theftCaseId], references: [id], onDelete: Cascade)
+  
+  type          EvidenceType
+  description   String    @db.Text
+  fileUrl       String?
+  fileName      String?
+  uploadedAt    DateTime  @default(now())
+
+  @@map("evidence")
+}
+
+enum EvidenceType {
+  PHOTO
+  VIDEO
+  DOCUMENT
+  WITNESS_STATEMENT
+  CCTV_FOOTAGE
+  OTHER
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action      String
+  entityType  String
+  entityId    String
+  details     String?  @db.Text
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@map("activities")
+}
