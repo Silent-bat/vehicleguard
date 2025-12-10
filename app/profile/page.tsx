@@ -6,7 +6,7 @@ import { requireAuth } from "@/lib/auth-server"
 import { ProfileContent } from "@/components/profile/profile-content"
 
 export default async function ProfilePage() {
-  const user = await requireAuth().catch(() => redirect("/login"))
+  const user = await requireAuth().catch(() => redirect("/unauthorized"))
 
   return (
     <SidebarProvider>
