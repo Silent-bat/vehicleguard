@@ -8,8 +8,8 @@ import { Separator } from "@/components/ui/separator"
 import { requireAuth } from "@/lib/auth-server"
 
 export default async function VehiclesPage() {
-  await requireAuth().catch(() => redirect("/login"))
-  
+  await requireAuth().catch(() => redirect("/unauthorized"))
+
   const result = await getVehicles()
   const vehicles = result.data || []
 

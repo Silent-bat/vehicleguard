@@ -6,7 +6,7 @@ import { requireAuth } from "@/lib/auth-server"
 import { SettingsContent } from "@/components/settings/settings-content"
 
 export default async function SettingsPage() {
-  const user = await requireAuth().catch(() => redirect("/login"))
+  const user = await requireAuth().catch(() => redirect("/unauthorized"))
 
   return (
     <SidebarProvider>

@@ -29,9 +29,9 @@ export default function LoginPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       })
-      
+
       const checkData = await checkResponse.json()
-      
+
       if (!checkData.approved) {
         setError(checkData.message || "Your account is pending approval from an administrator")
         setLoading(false)
@@ -45,9 +45,11 @@ export default function LoginPage() {
 
       if (result.error) {
         setError(result.error.message || "Invalid email or password")
+      } else if (result.data) {
+        // Successful login - redirect to home
+        window.location.href = "/"
       } else {
-        router.push("/")
-        router.refresh()
+        setError("Login failed. Please try again.")
       }
     } catch (err) {
       setError("An error occurred during login")

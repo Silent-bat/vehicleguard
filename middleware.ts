@@ -16,21 +16,16 @@ export async function middleware(request: NextRequest) {
   // Check if user has a session token
   const sessionToken = request.cookies.get("better-auth.session_token")?.value
 
-  // If trying to access protected route without session, redirect to login
+  // If trying to access protected route without session, redirect to unauthorized page
   if (!isPublicRoute && !sessionToken) {
-    // Avoid redirect loop - if already at login, just continue
-    if (pathname === "/login") {
+    // Allow access to unauthorized page
+    if (pathname === "/unauthorized") {
       return NextResponse.next()
     }
-    const loginUrl = new URL("/login", request.url)
-    loginUrl.searchParams.set("callbackUrl", pathname)
-    return NextResponse.redirect(loginUrl)
+    return NextResponse.redirect(new URL("/unauthorized", request.url))
   }
 
-  // If logged in and trying to access auth pages, redirect to home
-  if (isPublicRoute && sessionToken && pathname !== "/") {
-    return NextResponse.redirect(new URL("/", request.url))
-  }
+
 
   return NextResponse.next()
 }
