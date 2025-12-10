@@ -11,15 +11,12 @@ import { getCurrentUser } from "@/lib/auth-server"
 
 export default async function DashboardPage() {
   const user = await getCurrentUser()
-  
+
   if (!user) {
-    redirect("/login")
+    redirect("/unauthorized")
   }
 
-  // Redirect admin users to admin dashboard
-  if (user.role === "ADMIN") {
-    redirect("/admin")
-  }
+
 
   const [statsResult, casesResult] = await Promise.all([getDashboardStats(), getTheftCases()])
 

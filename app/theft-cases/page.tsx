@@ -10,8 +10,8 @@ import { Plus } from "lucide-react"
 import { requireAuth } from "@/lib/auth-server"
 
 export default async function TheftCasesPage() {
-  await requireAuth().catch(() => redirect("/login"))
-  
+  await requireAuth().catch(() => redirect("/unauthorized"))
+
   const result = await getTheftCases()
   const cases = result.data || []
 

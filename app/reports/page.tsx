@@ -8,8 +8,8 @@ import { getTheftCases } from "@/lib/actions/theft-cases"
 import { requireAuth } from "@/lib/auth-server"
 
 export default async function ReportsPage() {
-  await requireAuth().catch(() => redirect("/login"))
-  
+  await requireAuth().catch(() => redirect("/unauthorized"))
+
   const [statsResult, casesResult] = await Promise.all([getDashboardStats(), getTheftCases()])
 
   const stats = statsResult.data || {
