@@ -14,7 +14,8 @@ export async function middleware(request: NextRequest) {
   }
 
   // Check if user has a session token
-  const sessionToken = request.cookies.get("better-auth.session_token")?.value
+  const sessionToken = request.cookies.get("better-auth.session_token")?.value ||
+    request.cookies.get("__Secure-better-auth.session_token")?.value
 
   // If trying to access protected route without session, redirect to unauthorized page
   if (!isPublicRoute && !sessionToken) {
